@@ -2,9 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  experimental: {
-    typedRoutes: true,
-  },
+  // typedRoutes는 Turbopack 미지원이라 비활성화. TS strict로 라우트 안전 보장.
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "*.supabase.co" },
