@@ -43,17 +43,20 @@
 ✅ Lighthouse 폴리시: Pretendard preconnect/preload + Suspense skeleton (라이브러리·자료 상세)
 ✅ 37 routes production build 성공
 
+**Phase 2 — M2 자동 정기 수집 완료 (2026-05-21)**
+✅ `lib/pipeline/discovery.ts` — RSS/Atom 자동 감지 + HTML 셀렉터 폴백 + 중복 차단
+✅ `/api/admin/discovery/trigger` — Vercel Cron 또는 관리자 수동 호출 (`CRON_SECRET` 인증)
+✅ `/admin/discovery` 큐 실 동작 — 후보 자료 승인/거절 + 실행 이력
+✅ `vercel.json` 주 1회 cron 스케줄 (월요일 03:00 KST)
+
 ## 다음 단계
 
-**Phase 2 — M2**
-🔜 자동 정기 수집 실 구현 (`supabase/functions/discovery-scheduler/` Edge Function)
-🔜 국내 자료 큐레이션 확장
-🔜 용어 사전 100개 보강
-
 **Phase 3 — M3**
-🔜 회원 가입·로그인·승인 흐름 + `/account/*` 페이지
-🔜 회원 본문 노출 (depth_stage>=translated)
-🔜 피드백 폼 + admin 처리 UI
+🔜 `/auth/{login,signup,pending}` stub → 실 폼 교체
+🔜 `/admin/members` 승인 큐 실 동작
+🔜 `/account/{bookmarks,filters,settings}` 회원 페이지
+🔜 회원 본문 노출 (`depth_stage>='translated'`)
+🔜 피드백 폼 + `/admin/feedback` 처리
 
 ## M1 출시 운영 절차
 1. Supabase 프로젝트 신설 → `supabase link --project-ref <ref>`
