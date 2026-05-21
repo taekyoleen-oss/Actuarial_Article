@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { signInMember } from "@/lib/actions/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -9,11 +10,19 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-/**
- * Stub for M1 — member sign-up/login activates in M3 (per 부록 A 마일스톤).
- * Provides a clean path for admins to reach /admin/login.
- */
-export default function MemberLoginStubPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  readonly searchParams: Promise<{ error?: string; next?: string }>;
+}) {
+  const { error, next } = await searchParams;
+  const errorMessage = (() => {
+    if (!error) return null;
+    if (error === "no_member")
+      return "이 계정은 아직 회원 신청이 완료되지 않았습니다. 가입 신청을 진행해 주세요.";
+    return error;
+  })();
+
   return (
     <div className="mx-auto max-w-md py-12">
       <Card>
@@ -23,54 +32,52 @@ export default function MemberLoginStubPage() {
             Actuarial Intel Korea
           </p>
         </CardHeader>
-        <CardContent className="space-y-5">
-          <div className="rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-muted)]/40 p-4 text-sm">
-            <p className="font-semibold">회원 가입은 곧 활성화됩니다.</p>
-            <p className="mt-1 text-[color:var(--color-muted-foreground)]">
-              본 플랫폼은 현재 <strong>공개 읽기(M1)</strong> 단계입니다. 회원 가입·번역 본문
-              전문 열람·책갈피·도입 등급 필터 저장 기능은 다음 단계(M3)에서 공개됩니다.
-              지금은 자료 메타·요약·한국형 해석을 비회원도 자유롭게 열람할 수 있습니다.
-            </p>
-          </div>
-
-          <div className="space-y-2 text-sm">
-            <p className="font-semibold">지금 할 수 있는 것</p>
-            <ul className="list-disc space-y-1 pl-5 text-[color:var(--color-muted-foreground)]">
-              <li>
-                <Link href="/library" className="text-[color:var(--color-primary)] hover:underline">
-                  라이브러리
-                </Link>
-                에서 큐레이션된 자료 열람
-              </li>
-              <li>
-                <Link href="/glossary" className="text-[color:var(--color-primary)] hover:underline">
-                  용어 사전
-                </Link>{" "}
-                검색
-              </li>
-              <li>
-                <Link
-                  href="/data-catalog"
-                  className="text-[color:var(--color-primary)] hover:underline"
-                >
-                  국내 데이터 카탈로그
-                </Link>{" "}
-                참조
-              </li>
-              <li>
-                자료 제안: about 페이지의 이메일·외부 양식 채널
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-2 border-t border-[color:var(--color-border)] pt-4 text-sm">
-            <p className="font-semibold">관리자이신가요?</p>
-            <Button asChild variant="outline" className="w-full">
-              <Link href="/admin/login">관리자 콘솔로 이동 →</Link>
+        <CardContent>
+          <form action={signInMember} className="space-y-3">
+            <input type="hidden" name="next" defaultValue={next ?? "/"} />
+            <label className="block text-sm">
+              <span className="mb-1 block text-xs font-semibold">이메일</span>
+              <input
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                className="w-full rounded-md border border-[color:var(--color-border)] bg-white px-3 py-2 text-sm focus:border-[color:var(--color-primary)] focus:outline-none"
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="mb-1 block text-xs font-semibold">비밀번호</span>
+              <input
+                name="password"
+                type="password"
+                required
+                autoComplete="current-password"
+                className="w-full rounded-md border border-[color:var(--color-border)] bg-white px-3 py-2 text-sm focus:border-[color:var(--color-primary)] focus:outline-none"
+              />
+            </label>
+            {errorMessage ? (
+              <p className="rounded-sm bg-[color:var(--color-destructive)]/10 px-2 py-1.5 text-xs text-[color:var(--color-destructive)]">
+                {errorMessage}
+              </p>
+            ) : null}
+            <Button type="submit" className="w-full">
+              로그인
             </Button>
-          </div>
+            <p className="text-center text-xs">
+              아직 회원이 아니신가요?{" "}
+              <Link href="/auth/signup" className="text-[color:var(--color-primary)] hover:underline">
+                가입 신청
+              </Link>
+            </p>
+          </form>
         </CardContent>
       </Card>
+      <div className="mt-6 rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-muted)]/40 p-4 text-xs text-[color:var(--color-muted-foreground)]">
+        관리자이신가요?{" "}
+        <Link href="/admin/login" className="text-[color:var(--color-primary)] hover:underline">
+          관리자 콘솔 →
+        </Link>
+      </div>
     </div>
   );
 }

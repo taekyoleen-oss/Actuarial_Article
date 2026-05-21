@@ -49,14 +49,30 @@
 ✅ `/admin/discovery` 큐 실 동작 — 후보 자료 승인/거절 + 실행 이력
 ✅ `vercel.json` 주 1회 cron 스케줄 (월요일 03:00 KST)
 
-## 다음 단계
+**Phase 3 — M3 회원 흐름 완료 (2026-05-21)**
+✅ 도메인 분류 + 회원 가드 (`lib/auth/domain-classifier.ts`, `lib/supabase/member-guard.ts`)
+✅ `/auth/{signup,login,pending}` 실 폼·동적 페이지 + Server Actions (`signUpMember`, `signInMember`, `signOutMember`)
+✅ `/account/{bookmarks,filters,settings}` 회원 페이지 + Server Actions (`toggleBookmark`, `saveFilter`, `submitFeedback`)
+✅ 자료 상세에서 회원 본문 노출 (`depth_stage>='translated'`, ReactMarkdown + GFM) + 책갈피 + 피드백 폼
+✅ 헤더 동적 계정 메뉴 (미인증/대기/활성 3 상태)
+✅ `/admin/members` 승인 큐 (승인/거절/정지/재활성) · `/admin/feedback` 처리 (in_review/resolve/reject + 관리자 노트)
 
-**Phase 3 — M3**
-🔜 `/auth/{login,signup,pending}` stub → 실 폼 교체
-🔜 `/admin/members` 승인 큐 실 동작
-🔜 `/account/{bookmarks,filters,settings}` 회원 페이지
-🔜 회원 본문 노출 (`depth_stage>='translated'`)
-🔜 피드백 폼 + `/admin/feedback` 처리
+**🎉 설계서 v1.2 M1+M2+M3 전체 마일스톤 코드 완료. 37 routes production build.**
+
+## 다음 단계 (운영·확장)
+
+**운영 시작**
+🔜 Vercel 배포 → 도메인 연결
+🔜 Supabase Auth Settings에서 Confirm email 옵션 검토
+🔜 회원 가입 흐름 시각 검증
+🔜 실 자동 수집 소스 등록 (RSS feed_url 또는 list_url/selector)
+
+**Phase 3.x — 폴리시**
+🔜 라이브러리 필터에 "현재 필터 저장" 버튼
+🔜 인앱 비밀번호 재설정 폼
+🔜 책갈피 메모 추가/수정 UI
+🔜 100개 용어 보강
+🔜 LLM 비용 모니터링 위젯
 
 ## M1 출시 운영 절차
 1. Supabase 프로젝트 신설 → `supabase link --project-ref <ref>`

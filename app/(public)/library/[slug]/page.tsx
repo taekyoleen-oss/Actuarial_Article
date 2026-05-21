@@ -1,12 +1,17 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdoptionBadge } from "@/components/shared/AdoptionBadge";
 import { DepthBadge } from "@/components/shared/DepthBadge";
 import { RegionPill } from "@/components/shared/RegionPill";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { BookmarkButton } from "@/components/document/BookmarkButton";
+import { FeedbackForm } from "@/components/document/FeedbackForm";
 import { getPublicDocumentBySlug } from "@/lib/supabase/queries/documents";
+import { getActiveMember } from "@/lib/supabase/member-guard";
 import {
   BUSINESS_AREA_LABELS,
   DEPTH_STAGE_LABELS,
@@ -53,6 +58,29 @@ export default async function DocumentDetailPage({ params }: PageProps) {
   const { document, interpretation } = data;
   const reachedInterpreted = DEPTH_STAGE_ORDINAL[document.depth_stage] >= 4;
   const reachedTranslated = DEPTH_STAGE_ORDINAL[document.depth_stage] >= 3;
+
+  // M3 member context — translation body + bookmark + feedback
+  const member = await getActiveMember();
+  let translationBody: string | null = null;
+  let initialBookmarked = false;
+  if (member && reachedTranslated) {
+    const { data: latestTrans } = await member.supabase
+      .from("aik_translations")
+      .select("content_md")
+      .eq("document_id", document.id)
+      .order("version", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    translationBody = (latestTrans as { content_md: string } | null)?.content_md ?? null;
+
+    const { data: bookmark } = await member.supabase
+      .from("aik_bookmarks")
+      .select("id")
+      .eq("member_id", member.member.id)
+      .eq("document_id", document.id)
+      .maybeSingle();
+    initialBookmarked = !!bookmark;
+  }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://actuarial-intel.kr";
   const jsonLd = {
@@ -107,10 +135,18 @@ export default async function DocumentDetailPage({ params }: PageProps) {
               {document.title}
             </p>
           ) : null}
-          <p className="text-sm text-[color:var(--color-muted-foreground)]">
-            {document.source_organization} · {document.source_name} · 발행일{" "}
-            {formatDateKR(document.published_at)}
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-[color:var(--color-muted-foreground)]">
+              {document.source_organization} · {document.source_name} · 발행일{" "}
+              {formatDateKR(document.published_at)}
+            </p>
+            {member ? (
+              <BookmarkButton
+                documentId={document.id}
+                initialBookmarked={initialBookmarked}
+              />
+            ) : null}
+          </div>
         </header>
 
         {/* 한국형 해석 (상단 고정, depth_stage='interpreted'일 때만) */}
@@ -183,7 +219,21 @@ export default async function DocumentDetailPage({ params }: PageProps) {
         {/* 번역 본문 영역 (회원 전용) */}
         <section>
           <h2 className="mb-3 font-serif text-xl">번역 본문</h2>
-          {reachedTranslated ? (
+          {!reachedTranslated ? (
+            <Card>
+              <CardContent className="py-6 text-center text-sm text-[color:var(--color-muted-foreground)]">
+                번역이 아직 완료되지 않은 자료입니다.
+              </CardContent>
+            </Card>
+          ) : member && translationBody ? (
+            <Card>
+              <CardContent className="prose-actuarial max-w-none py-6">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {translationBody}
+                </ReactMarkdown>
+              </CardContent>
+            </Card>
+          ) : (
             <Card>
               <CardContent className="py-8 text-center">
                 <p className="text-sm text-[color:var(--color-muted-foreground)]">
@@ -199,14 +249,11 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                 </div>
               </CardContent>
             </Card>
-          ) : (
-            <Card>
-              <CardContent className="py-6 text-center text-sm text-[color:var(--color-muted-foreground)]">
-                번역이 아직 완료되지 않은 자료입니다.
-              </CardContent>
-            </Card>
           )}
         </section>
+
+        {/* 피드백 (회원 전용) */}
+        {member ? <FeedbackForm documentId={document.id} /> : null}
 
         {/* 원문 안내 */}
         <section>
