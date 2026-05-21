@@ -40,6 +40,10 @@ export function Footer() {
       </div>
       <div className="border-t border-[color:var(--color-border)] py-4 text-center text-xs text-[color:var(--color-muted-foreground)]">
         © {new Date().getFullYear()} Actuarial Intel Korea. 정보 제공 목적, 실제 적용은 소속 회사·감독원 해석을 따릅니다.
+        <span className="mx-2">·</span>
+        <Link href="/admin/login" className="hover:text-[color:var(--color-foreground)]">
+          관리자 콘솔
+        </Link>
       </div>
     </footer>
   );
