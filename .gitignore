@@ -1,0 +1,32 @@
+node_modules/
+.next/
+.next-types/
+out/
+build/
+
+.env
+.env.local
+.env*.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+.DS_Store
+*.pem
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+next-env.d.ts
+
+# Local Supabase development
+supabase/.branches/
+supabase/.temp/
+
+# Agent intermediate outputs (not committed)
+output/
+
+# Generated types (regenerated from Supabase)
+types/database.ts

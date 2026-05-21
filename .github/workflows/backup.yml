@@ -1,0 +1,64 @@
+name: Daily Supabase CSV Backup
+
+# Per §D.4: Pro PITR(7일) + 매일 03:00 KST CSV 덤프를 private repo에 push.
+# Secrets needed in this repo:
+#   SUPABASE_DB_URL    — postgres connection string (or pooler URL)
+#   BACKUP_REPO_PAT    — fine-scoped PAT with `contents:write` on the backup repo
+#   BACKUP_REPO_NAME   — e.g. `tkleen/aik-backup`
+
+on:
+  schedule:
+    - cron: "0 18 * * *"    # 18:00 UTC == 03:00 KST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install psql
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends postgresql-client
+
+      - name: Dump tables to CSV
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          mkdir -p ./dump
+          STAMP=$(date -u +"%Y%m%dT%H%M%SZ")
+          for TABLE in aik_documents aik_translations aik_interpretations aik_glossary aik_sources aik_audit_log; do
+            psql "${SUPABASE_DB_URL}" -c "\copy ${TABLE} TO './dump/${TABLE}_${STAMP}.csv' WITH (FORMAT csv, HEADER true)"
+          done
+          # Members: only email + display_name (no auth secrets)
+          psql "${SUPABASE_DB_URL}" -c "\copy (select id, email, display_name, domain_classification, status, created_at, approved_at from aik_members) TO './dump/aik_members_${STAMP}.csv' WITH (FORMAT csv, HEADER true)"
+          echo "STAMP=${STAMP}" >> "$GITHUB_ENV"
+
+      - name: Checkout backup repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.BACKUP_REPO_NAME }}
+          token: ${{ secrets.BACKUP_REPO_PAT }}
+          path: backup
+
+      - name: Move dumps & commit
+        run: |
+          set -euo pipefail
+          DEST="backup/$(date -u +%Y/%m)"
+          mkdir -p "${DEST}"
+          mv dump/*.csv "${DEST}/"
+          cd backup
+          git config user.email "aik-bot@actuarial-intel.kr"
+          git config user.name "aik-backup-bot"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes — nothing to commit."
+          else
+            git commit -m "backup: ${STAMP}"
+            git push
+          fi
