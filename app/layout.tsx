@@ -51,6 +51,14 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  icons: {
+    icon: [
+      { url: "/brand/svg/11-favicon.svg", type: "image/svg+xml" },
+      { url: "/brand/png/11-favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/brand/png/11-favicon-16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [{ url: "/brand/png/03-app-icon-navy-256.png", sizes: "256x256", type: "image/png" }],
+  },
 };
 
 export const viewport: Viewport = {

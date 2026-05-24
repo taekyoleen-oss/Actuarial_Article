@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -75,6 +76,26 @@ export default function AboutPage() {
         본 플랫폼이 제공하는 한국형 해석·규제 영향·도입방안은 참고용입니다. 실제 적용·해석은
         소속 회사·감독원의 공식 해석을 따르시기 바랍니다.
       </p>
+
+      <h2>운영자</h2>
+      <Card className="not-prose my-6">
+        <CardContent className="flex items-center gap-4 py-6">
+          <Image
+            src="/brand/svg/01-primary-transparent.svg"
+            alt="tkLeen mark"
+            width={56}
+            height={56}
+            className="shrink-0"
+          />
+          <div className="text-sm">
+            <p className="font-serif text-base font-semibold">tkLeen</p>
+            <p className="text-[color:var(--color-muted-foreground)]">
+              보험·금융 실무를 위한 AI 워크플로우. Actuarial Intel Korea는 tkLeen이 1인 운영하는
+              큐레이션 프로젝트입니다.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
 
       <p className="mt-12 text-sm">
         <Link href="/library" className="text-[color:var(--color-primary)] hover:underline">

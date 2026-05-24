@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function Footer() {
@@ -8,6 +9,25 @@ export function Footer() {
           <p className="font-serif text-base font-semibold">Actuarial Intel Korea</p>
           <p className="mt-2 text-sm text-[color:var(--color-muted-foreground)]">
             해외·국내 보험·계리 자료를 한국 실무 도입 관점에서 큐레이션하는 플랫폼.
+          </p>
+          <p className="mt-4 flex items-center gap-2 text-xs text-[color:var(--color-muted-foreground)]">
+            <span>Operated by</span>
+            <Image
+              src="/brand/svg/01-primary-transparent.svg"
+              alt="tkLeen"
+              width={28}
+              height={28}
+              className="dark:hidden"
+              priority={false}
+            />
+            <Image
+              src="/brand/svg/02-reversed-transparent.svg"
+              alt="tkLeen"
+              width={28}
+              height={28}
+              className="hidden dark:block"
+              priority={false}
+            />
           </p>
         </div>
         <div className="text-sm">

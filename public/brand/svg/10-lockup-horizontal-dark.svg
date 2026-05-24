@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 200" width="760" height="200">
+  <title>tkLeen — horizontal lockup, dark</title>
+  <rect x="0" y="0" width="760" height="200" fill="#0A0A0A"/>
+  <g transform="translate(20, 20)">
+    <rect x="40" y="40" width="80" height="20" fill="#FAFAF7"/>
+    <rect x="60" y="60" width="20" height="40" fill="#FAFAF7"/>
+    <rect x="60" y="100" width="20" height="60" fill="#4A90C2"/>
+    <rect x="80" y="100" width="20" height="20" fill="#4A90C2"/>
+    <rect x="100" y="80" width="20" height="20" fill="#4A90C2"/>
+    <rect x="120" y="60" width="20" height="20" fill="#4A90C2"/>
+    <rect x="80" y="120" width="20" height="20" fill="#4A90C2"/>
+    <rect x="100" y="140" width="20" height="20" fill="#4A90C2"/>
+    <rect x="120" y="160" width="20" height="20" fill="#4A90C2"/>
+  </g>
+  <line x1="200" y1="70" x2="200" y2="130" stroke="#2A2A2A" stroke-width="1"/>
+  <text x="225" y="108" font-family="Georgia, 'Times New Roman', serif" font-weight="300" font-size="56" fill="#FAFAF7" letter-spacing="-1.5">tk</text>
+  <text x="289" y="108" font-family="Georgia, 'Times New Roman', serif" font-weight="400" font-size="56" fill="#4A90C2" letter-spacing="-1.5">L</text>
+  <text x="319" y="108" font-family="Georgia, 'Times New Roman', serif" font-weight="300" font-size="56" fill="#FAFAF7" letter-spacing="-1.5">een</text>
+  <text x="225" y="138" font-family="'Courier New', monospace" font-size="11" fill="#8A8A88" letter-spacing="2.5">AI WORKFLOWS · INSURANCE &amp; FINANCE</text>
+</svg>
