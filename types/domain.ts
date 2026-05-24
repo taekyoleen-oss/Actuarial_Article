@@ -65,6 +65,15 @@ export type MemberStatus = (typeof MEMBER_STATUSES)[number];
 export const DOMAIN_CLASSIFICATIONS = ["whitelist", "other", "blocked"] as const;
 export type DomainClassification = (typeof DOMAIN_CLASSIFICATIONS)[number];
 
+export const LICENSE_TYPES = [
+  "open_access",
+  "cc_licensed",
+  "copyrighted",
+  "members_only",
+  "unknown",
+] as const;
+export type LicenseType = (typeof LICENSE_TYPES)[number];
+
 export const PRIMARY_TOPICS = [
   "mortality",
   "longevity",
