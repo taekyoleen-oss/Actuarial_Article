@@ -29,5 +29,3 @@ supabase/.temp/
 # Agent intermediate outputs (not committed)
 output/
 
-# Generated types (regenerated from Supabase)
-types/database.ts
