@@ -2,9 +2,9 @@ name: Daily Supabase CSV Backup
 
 # Per §D.4: Pro PITR(7일) + 매일 03:00 KST CSV 덤프를 private repo에 push.
 # Secrets needed in this repo:
-#   SUPABASE_DB_URL    — postgres connection string (or pooler URL)
-#   BACKUP_REPO_PAT    — fine-scoped PAT with `contents:write` on the backup repo
-#   BACKUP_REPO_NAME   — e.g. `tkleen/aik-backup`
+#   SUPABASE_DB_URL      — postgres connection string (Supavisor session pooler URL; GitHub runners are IPv4-only)
+#   BACKUP_REPO_SSH_KEY  — private half of a write deploy key on the backup repo
+#   BACKUP_REPO_NAME     — e.g. `taekyoleen-oss/aik-backup`
 
 on:
   schedule:
@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ secrets.BACKUP_REPO_NAME }}
-          token: ${{ secrets.BACKUP_REPO_PAT }}
+          ssh-key: ${{ secrets.BACKUP_REPO_SSH_KEY }}
           path: backup
 
       - name: Move dumps & commit
